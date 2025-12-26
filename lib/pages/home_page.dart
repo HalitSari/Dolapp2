@@ -6,6 +6,8 @@ import 'package:dolaptakip/providers/fridge_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:dolaptakip/pages/settings_page.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -45,8 +47,23 @@ class _HomePageState extends State<HomePage> {
         centerTitle: false,
         titleTextStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
           fontWeight: FontWeight.bold,
-          color: Color(0xFF2D3436),
+          color: Theme.of(context).colorScheme.onSurface,
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.settings_rounded,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: _pages[_currentIndex],
       floatingActionButton: _currentIndex == 0

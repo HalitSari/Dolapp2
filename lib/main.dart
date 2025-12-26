@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:dolaptakip/providers/fridge_provider.dart';
+import 'package:dolaptakip/providers/theme_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,18 +16,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => FridgeProvider())],
-      child: MaterialApp(
-        title: 'Dolap Takip',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [Locale('tr', 'TR')],
-        home: const SplashScreen(),
+      providers: [
+        ChangeNotifierProvider(create: (_) => FridgeProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'Dolap Takip',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeProvider.themeMode,
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('tr', 'TR')],
+            home: const SplashScreen(),
+          );
+        },
       ),
     );
   }
