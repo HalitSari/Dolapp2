@@ -39,12 +39,20 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Dolabım')),
+      extendBody: true, // Content behind floating nav
+      appBar: AppBar(
+        title: const Text('Dolabım'),
+        centerTitle: false,
+        titleTextStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF2D3436),
+        ),
+      ),
       body: _pages[_currentIndex],
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               onPressed: _showAddItemSheet,
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.add_rounded, size: 32),
             )
           : null,
       bottomNavigationBar: CustomBottomNavBar(
@@ -59,16 +67,17 @@ class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
   Color _getStatusColor(int daysLeft) {
-    if (daysLeft <= 0) return Colors.red.shade900;
-    if (daysLeft <= 1) return Colors.red;
-    if (daysLeft <= 2) return Colors.orange;
-    if (daysLeft <= 3) return Colors.amber;
-    return const Color(0xFF2C2C2C); // Default dark card color
+    if (daysLeft <= 0) return const Color(0xFFFF5252); // Red
+    if (daysLeft <= 2) return const Color(0xFFFFAB40); // Orange
+    if (daysLeft <= 5) return const Color(0xFFFFD740); // Amber
+    return const Color(0xFF00E676); // Green/Mint
   }
 
-  Color _getTextColor(int daysLeft) {
-    if (daysLeft <= 3) return Colors.black87;
-    return Colors.white;
+  String _getStatusText(int daysLeft) {
+    if (daysLeft < 0) return 'Süresi Doldu';
+    if (daysLeft == 0) return 'Bugün Son';
+    if (daysLeft == 1) return 'Yarın Son';
+    return '$daysLeft gün kaldı';
   }
 
   @override
@@ -82,8 +91,12 @@ class HomeContent extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.kitchen, size: 64, color: Colors.grey[700]),
-                const SizedBox(height: 16),
+                Icon(
+                  Icons.kitchen_rounded,
+                  size: 80,
+                  color: Colors.grey.withAlpha(50),
+                ),
+                const SizedBox(height: 24),
                 Text(
                   'Dolabın boş görünüyor.\nHemen bir şeyler ekle!',
                   textAlign: TextAlign.center,
@@ -94,56 +107,105 @@ class HomeContent extends StatelessWidget {
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(
+            20,
+            10,
+            20,
+            100,
+          ), // Bottom padding for FAB/Nav
           itemCount: items.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
             final item = items[index];
             final daysLeft =
                 item.expirationDate.difference(DateTime.now()).inDays + 1;
+            final statusColor = _getStatusColor(daysLeft);
 
-            final cardColor = _getStatusColor(daysLeft);
-            final textColor = _getTextColor(daysLeft);
-            final subTextColor = daysLeft <= 3 ? Colors.black54 : Colors.grey;
-
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              color: cardColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+            return Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(20),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: ListTile(
-                leading: item.imageUrl != null
-                    ? CircleAvatar(
-                        backgroundImage: AssetImage(item.imageUrl!),
-                        radius: 24,
-                      )
-                    : const Text(
-                        '🍎',
-                        style: TextStyle(fontSize: 32),
-                      ), // Fallback emoji
-                title: Text(
-                  item.name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: textColor,
-                  ),
-                ),
-                subtitle: Text(
-                  daysLeft < 0
-                      ? 'SKT Geçti (${-daysLeft} gün)'
-                      : 'SKT: $daysLeft gün kaldı',
-                  style: TextStyle(
-                    color: subTextColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete_outline, color: subTextColor),
-                  onPressed: () {
-                    provider.removeItem(item.id);
-                  },
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    // Image Container
+                    Container(
+                      width: 70,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[900],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: item.imageUrl != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(
+                                item.imageUrl!,
+                                fit: BoxFit.cover,
+                                width: 70,
+                                height: 70,
+                              ),
+                            )
+                          : const Center(
+                              child: Text('🍎', style: TextStyle(fontSize: 32)),
+                            ),
+                    ),
+                    const SizedBox(width: 16),
+                    // Content
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Color(0xFF2D3436),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: statusColor.withAlpha(30),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: statusColor.withAlpha(50),
+                              ),
+                            ),
+                            child: Text(
+                              _getStatusText(daysLeft),
+                              style: TextStyle(
+                                color: statusColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Action
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline_rounded),
+                      color: Colors.grey,
+                      onPressed: () => provider.removeItem(item.id),
+                    ),
+                  ],
                 ),
               ),
             );

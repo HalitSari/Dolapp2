@@ -14,19 +14,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Dolap Takip',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('tr', 'TR')],
-      home: MultiProvider(
-        providers: [ChangeNotifierProvider(create: (_) => FridgeProvider())],
-        child: const SplashScreen(),
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => FridgeProvider())],
+      child: MaterialApp(
+        title: 'Dolap Takip',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('tr', 'TR')],
+        home: const SplashScreen(),
       ),
     );
   }
