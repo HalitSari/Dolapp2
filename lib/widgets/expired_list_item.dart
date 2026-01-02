@@ -2,14 +2,33 @@ import 'package:dolaptakip/models/food_item.dart';
 import 'package:dolaptakip/providers/fridge_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dolaptakip/l10n/app_localizations.dart';
 
+// ExpiredListItem: "Süresi Geçenler" sayfasındaki riskli ürünlerin kart tasarımı.
 class ExpiredListItem extends StatelessWidget {
   final FoodItem item;
 
   const ExpiredListItem({super.key, required this.item});
 
+  String _getTimeAgo(BuildContext context, int days) {
+    var l10n = AppLocalizations.of(context)!;
+    if (days == 0) return l10n.timeAgoToday;
+    if (days == -1) return l10n.timeAgoYesterday;
+    if (days < -1) return l10n.timeAgoPast(days.abs());
+    return '';
+  }
+
+  String _getExpiredStatusText(BuildContext context, int days) {
+    var l10n = AppLocalizations.of(context)!;
+    if (days < -7) return l10n.expiredWarningUrgent;
+    if (days < -3) return l10n.expiredWarningRisk;
+    return l10n.expiredWarningPast;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -26,7 +45,7 @@ class ExpiredListItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            // Left accent border
+            // Sol taraftaki kırmızı dikey şerit (Vurgu)
             Positioned(
               left: 0,
               top: 0,
@@ -34,12 +53,13 @@ class ExpiredListItem extends StatelessWidget {
               width: 4,
               child: Container(color: const Color(0xFFFF3B30).withAlpha(100)),
             ),
+
             Padding(
               padding: const EdgeInsets.all(12),
               child: Row(
                 children: [
-                  const SizedBox(width: 8), // Spacing for border
-                  // Image
+                  const SizedBox(width: 8),
+                  // --- Ürün Resmi ---
                   Container(
                     width: 60,
                     height: 60,
@@ -58,6 +78,8 @@ class ExpiredListItem extends StatelessWidget {
                         : const Icon(Icons.kitchen, color: Colors.grey),
                   ),
                   const SizedBox(width: 16),
+
+                  // --- Bilgiler ---
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,10 +95,11 @@ class ExpiredListItem extends StatelessWidget {
                                 color: Color(0xFF2D3436),
                               ),
                             ),
+                            // Ne zaman bozuldu? (Örn: "Dün")
                             Text(
-                              item.timeAgo,
+                              _getTimeAgo(context, item.daysLeft), // Localized
                               style: const TextStyle(
-                                color: Color(0xFFFF3B30), // Red text for date
+                                color: Color(0xFFFF3B30),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -84,14 +107,18 @@ class ExpiredListItem extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 4),
+
+                        // Kategori Bilgisi
                         Text(
-                          item.category,
+                          item.category, // Technically should be localized too via map if possible
                           style: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 12,
                           ),
                         ),
                         const SizedBox(height: 4),
+
+                        // Uyarı Durumu (Örn: "Bozulmuş olabilir", "ACİL")
                         Row(
                           children: [
                             const Icon(
@@ -101,7 +128,10 @@ class ExpiredListItem extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              item.expiredStatusText,
+                              _getExpiredStatusText(
+                                context,
+                                item.daysLeft,
+                              ), // Localized
                               style: const TextStyle(
                                 color: Color(0xFFFF3B30),
                                 fontSize: 12,
@@ -119,9 +149,9 @@ class ExpiredListItem extends StatelessWidget {
                                   color: Colors.red,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                                child: const Text(
-                                  'ACİL',
-                                  style: TextStyle(
+                                child: Text(
+                                  l10n.urgentLabel, // Localized
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
@@ -135,8 +165,9 @@ class ExpiredListItem extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
+
+                  // --- Silme Butonu ---
                   IconButton(
-                    // Made interactive
                     onPressed: () {
                       Provider.of<FridgeProvider>(
                         context,

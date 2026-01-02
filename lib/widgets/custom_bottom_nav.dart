@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dolaptakip/l10n/app_localizations.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -12,6 +13,8 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
       decoration: BoxDecoration(
@@ -47,21 +50,21 @@ class CustomBottomNavBar extends StatelessWidget {
           showUnselectedLabels: false,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              activeIcon: Icon(Icons.home_rounded, size: 28),
-              label: 'Ana Sayfa',
+              icon: const Icon(Icons.home_rounded),
+              activeIcon: const Icon(Icons.home_rounded, size: 28),
+              label: l10n.tabHome,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.warning_amber_rounded),
-              activeIcon: Icon(Icons.warning_amber_rounded, size: 28),
-              label: 'SKT',
+              icon: const Icon(Icons.warning_amber_rounded),
+              activeIcon: const Icon(Icons.warning_amber_rounded, size: 28),
+              label: l10n.tabExpired,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.restaurant_menu_rounded),
-              activeIcon: Icon(Icons.restaurant_menu_rounded, size: 28),
-              label: 'Tarifler',
+              icon: const Icon(Icons.restaurant_menu_rounded),
+              activeIcon: const Icon(Icons.restaurant_menu_rounded, size: 28),
+              label: l10n.tabRecipes,
             ),
           ],
         ),

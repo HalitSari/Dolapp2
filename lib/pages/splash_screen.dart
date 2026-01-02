@@ -35,6 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
 
     Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
@@ -61,10 +62,10 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.kitchen,
-                      size: 100,
-                      color: Theme.of(context).primaryColor,
+                    Image.asset(
+                      'assets/images/app_icon.png',
+                      width: 150,
+                      height: 150,
                     ),
                     const SizedBox(height: 20),
                     Text(

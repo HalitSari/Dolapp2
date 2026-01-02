@@ -5,10 +5,12 @@ import 'package:dolaptakip/widgets/custom_bottom_nav.dart';
 import 'package:dolaptakip/providers/fridge_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dolaptakip/l10n/app_localizations.dart';
 
 import 'package:dolaptakip/widgets/food_list_item.dart';
 import 'package:dolaptakip/pages/settings_page.dart';
 
+// HomePage: Uygulamanın ana giriş noktası ve iskelesi.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -20,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeContent(), // Extracting Home Content to separate widget for cleanliness
+    const HomeContent(),
     const ExpiredProductsPage(),
     const RecipesPage(),
   ];
@@ -41,10 +43,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      extendBody: true, // Content behind floating nav
+      extendBody: true,
       appBar: AppBar(
-        title: const Text('Dolabım'),
+        title: Text(l10n.appTitle), // Localized Title
         centerTitle: false,
         titleTextStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
           fontWeight: FontWeight.bold,
@@ -86,6 +90,8 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Consumer<FridgeProvider>(
       builder: (context, provider, child) {
         final items = provider.items;
@@ -102,7 +108,7 @@ class HomeContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Dolabın boş görünüyor.\nHemen bir şeyler ekle!',
+                  l10n.emptyFridgeMessage, // Localized Empty Message
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey[600], fontSize: 16),
                 ),
@@ -112,12 +118,7 @@ class HomeContent extends StatelessWidget {
         }
 
         return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(
-            20,
-            10,
-            20,
-            100,
-          ), // Bottom padding for FAB/Nav
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
           itemCount: items.length,
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, index) {

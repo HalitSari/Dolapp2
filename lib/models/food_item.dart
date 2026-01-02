@@ -38,16 +38,25 @@ class FoodItem {
       category: json['category'],
     );
   }
-  // --- Firestore Integration ---
+  // --- Firestore Integration (Veritabanı Entegrasyonu) ---
 
+  // Firestore'dan gelen veriyi (DocumentSnapshot) alıp bizim FoodItem nesnemize çeviren "fabrika" metodu.
+  // Bu metoda "Deserialization" (Tersine Serileştirme) denir.
   factory FoodItem.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    DocumentSnapshot<Map<String, dynamic>>
+    snapshot, // Veritabanından gelen ham döküman
     SnapshotOptions? options,
   ) {
-    final data = snapshot.data();
+    final data = snapshot
+        .data(); // Dökümanın içindeki veriyi Map (Sözlük) olarak alıyoruz.
     return FoodItem(
-      id: snapshot.id,
-      name: data?['name'] ?? '',
+      id: snapshot
+          .id, // Dökümanın benzersiz ID'sini (örn: "dKj32s...") modelimize atıyoruz.
+      name:
+          data?['name'] ??
+          '', // Eğer isim yoksa boş string veriyoruz (Güvenlik önlemi).
+      // Firestore tarihleri 'Timestamp' formatında tutar.
+      // Dart ise 'DateTime' kullanır. Burada Timestamp -> DateTime dönüşümü yapıyoruz.
       expirationDate: (data?['expirationDate'] as Timestamp).toDate(),
       addedDate: (data?['addedDate'] as Timestamp).toDate(),
       imageUrl: data?['imageUrl'],
@@ -55,9 +64,12 @@ class FoodItem {
     );
   }
 
+  // Bizim FoodItem nesnemizi Firestore'un anlayacağı formata (Map) çeviren metod.
+  // Bu işlem "Serialization" (Serileştirme) olarak adlandırılır.
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,
+      // DateTime nesnesini Firestore'un istediği Timestamp formatına geri çeviriyoruz.
       'expirationDate': Timestamp.fromDate(expirationDate),
       'addedDate': Timestamp.fromDate(addedDate),
       'imageUrl': imageUrl,

@@ -1,0 +1,65 @@
+{
+    "appTitle": "DolApp",
+    "homePageTitle": "DolApp",
+    "expiredPageTitle": "Expired Items",
+    "recipesPageTitle": "Recipes",
+    "recipesUnderConstruction": "Under Construction",
+    "recipesComingSoon": "Delicious recipes will be here soon!",
+    "settingsPageTitle": "Settings",
+    "addItemTitle": "Add Item",
+    
+    "tabHome": "Home",
+    "tabExpired": "Expired",
+    "tabRecipes": "Recipes",
+    
+    "emptyFridgeMessage": "Your fridge looks empty.\nAdd something now!",
+    "emptyExpiredMessage": "No expired items!",
+    
+    "daysLeft": "{count, plural, =0{Expires Today} =1{Expires Tomorrow} other{{count} days left}}",
+
+    "timeAgoToday": "Today",
+    "timeAgoYesterday": "Yesterday",
+    "timeAgoPast": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+    "expiredStatus": "Expired",
+    "expiredWarningUrgent": "Dispose immediately",
+    "expiredWarningRisk": "May be spoiled",
+    "expiredWarningPast": "Expiration date passed",
+    "urgentLabel": "URGENT",
+    
+    "attentionTitle": "Attention Required",
+    "totalExpiredItems": "A total of {count} items have passed their expiration date.",
+    
+    "detectedTitle": "DETECTED ITEMS",
+    "clearAllButton": "Clear All",
+    "clearAllSuccess": "All expired items cleared!",
+
+    "addItemSearchLabel": "Product to add",
+    "addItemSearchHint": "Ex: Milk",
+    "addItemCategory": "Category: {category}",
+    "addItemLocation": "Location: {location}",
+    
+    "isPackageOpen": "Is Package Open?",
+    "packageOpenHint": "Shelf life may be shorter.",
+    "packageClosedHint": "Shelf life based on expiry date.",
+    
+    "dateManual": "Selected Expiry Date",
+    "dateAuto": "Auto-Calculated Expiry Date",
+    "dateEstimated": "Estimated",
+    "dateAutomaticTooltip": "Reset to Auto",
+    
+    "addButton": "Add",
+    "addSuccess": "\"{name}\" added to your fridge!",
+    "addErrorEmpty": "Please enter a product name.",
+
+    "settingsLanguage": "Language",
+    "settingsLanguageTitle": "App Language",
+    "settingsTheme": "Theme",
+    "settingsThemeTitle": "App Theme",
+    
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+
+    "languageTr": "Turkish",
+    "languageEn": "English"
+}

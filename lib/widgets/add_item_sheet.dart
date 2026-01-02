@@ -3,7 +3,9 @@ import 'package:dolaptakip/providers/fridge_provider.dart';
 import 'package:dolaptakip/data/food_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dolaptakip/l10n/app_localizations.dart';
 
+// AddItemSheet: Ürün eklemek için alttan açılan panel (Bottom Sheet).
 class AddItemSheet extends StatefulWidget {
   const AddItemSheet({super.key});
 
@@ -14,21 +16,18 @@ class AddItemSheet extends StatefulWidget {
 class _AddItemSheetState extends State<AddItemSheet> {
   final TextEditingController _searchController = TextEditingController();
   DateTime? _selectedDate;
-  bool _isOpened = false; // New state for package status
-  FoodInfo? _selectedFoodInfo; // To store selected item data
-
-  // No longer needed: _kFoodOptions, _categoryExpirationEstimates
+  bool _isOpened = false;
+  FoodInfo? _selectedFoodInfo;
 
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(
-        const Duration(days: 365 * 5),
-      ), // Increased range
-      locale: const Locale('tr', 'TR'),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+      locale: Localizations.localeOf(context), // Use context locale
     );
+
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
@@ -38,7 +37,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
 
   DateTime _calculateEstimatedDate() {
     if (_selectedFoodInfo == null) {
-      return DateTime.now().add(const Duration(days: 7)); // Default fallback
+      return DateTime.now().add(const Duration(days: 7));
     }
 
     final daysToAdd = _isOpened
@@ -57,36 +56,47 @@ class _AddItemSheetState extends State<AddItemSheet> {
       );
     }
 
-    // Styled placeholder based on category
     Color bgColor = Colors.grey.shade800;
     IconData iconData = Icons.fastfood;
     Color iconColor = Colors.white70;
 
     switch (option.category) {
-      case 'Bakliyat':
-        bgColor = const Color(0xFF8D6E63); // Brownish
+      case 'Legumes & Grains': // Bakliyat
+        bgColor = const Color(0xFF8D6E63);
         iconData = Icons.grain;
         break;
-      case 'Atıştırmalık':
-        bgColor = const Color(0xFFBA68C8); // Purple
+      case 'Snacks': // Atıştırmalık
+        bgColor = const Color(0xFFBA68C8);
         iconData = Icons.cookie;
         break;
-      case 'İçecek':
-        bgColor = const Color(0xFF4FC3F7); // Light Blue
+      case 'Beverages': // İçecek
+        bgColor = const Color(0xFF4FC3F7);
         iconData = Icons.local_drink;
         break;
-      case 'Meyve & Sebze':
-        bgColor = const Color(0xFF81C784); // Green
+      case 'Fruit & Vegetable': // Meyve & Sebze
+        bgColor = const Color(0xFF81C784);
         iconData = Icons.eco;
         break;
-      case 'Süt & Kahvaltılık':
-        bgColor = const Color(0xFFFFF176); // Yellow
+      case 'Dairy & Breakfast': // Süt & Kahvaltılık
+        bgColor = const Color(0xFFFFF176);
         iconColor = Colors.black45;
         iconData = Icons.egg;
         break;
-      case 'Et & Tavuk':
-        bgColor = const Color(0xFFE57373); // Red
+      case 'Meat & Chicken': // Et & Tavuk
+        bgColor = const Color(0xFFE57373);
         iconData = Icons.dinner_dining;
+        break;
+      case 'Bakery': // Unlu Mamüller
+        bgColor = Colors.orangeAccent;
+        iconData = Icons.breakfast_dining;
+        break;
+      case 'Delicatessen': // Şarküteri
+        bgColor = Colors.redAccent;
+        iconData = Icons.lunch_dining;
+        break;
+      case 'Sauce & Canned': // Sos & Konserve
+        bgColor = Colors.deepOrange;
+        iconData = Icons.soup_kitchen;
         break;
       default:
         bgColor = Colors.blueGrey;
@@ -103,11 +113,10 @@ class _AddItemSheetState extends State<AddItemSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // Current effective date (Manual or Estimated)
+    final l10n = AppLocalizations.of(context)!;
     final effectiveDate = _selectedDate ?? _calculateEstimatedDate();
     final theme = Theme.of(context);
 
-    // Colors derived from theme
     final containerColor =
         theme.inputDecorationTheme.fillColor ?? theme.cardColor;
     final borderColor = theme.dividerColor;
@@ -129,7 +138,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Ürün Ekle',
+                l10n.addItemTitle, // Localized
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -142,22 +151,32 @@ class _AddItemSheetState extends State<AddItemSheet> {
           ),
           const SizedBox(height: 20),
 
-          // 1. Autocomplete Search
+          // --- 1. Otomatik Tamamlamalı Arama Kutusu (Autocomplete) ---
           Autocomplete<FoodInfo>(
             optionsBuilder: (TextEditingValue textEditingValue) {
+              final isTr = Localizations.localeOf(context).languageCode == 'tr';
               if (textEditingValue.text == '') {
                 final all = List<FoodInfo>.from(FoodData.allItems);
-                all.sort((a, b) => a.name.compareTo(b.name));
+                all.sort(
+                  (a, b) => (isTr ? a.nameTr : a.name).compareTo(
+                    isTr ? b.nameTr : b.name,
+                  ),
+                );
                 return all;
               }
               return FoodData.allItems.where((FoodInfo option) {
-                return option.name.toLowerCase().contains(
+                final optionName = isTr ? option.nameTr : option.name;
+                return optionName.toLowerCase().contains(
                   textEditingValue.text.toLowerCase(),
                 );
               });
             },
-            displayStringForOption: (FoodInfo option) => option.name,
+            displayStringForOption: (FoodInfo option) {
+              final isTr = Localizations.localeOf(context).languageCode == 'tr';
+              return isTr ? option.nameTr : option.name;
+            },
             optionsViewBuilder: (context, onSelected, options) {
+              final isTr = Localizations.localeOf(context).languageCode == 'tr';
               return Align(
                 alignment: Alignment.topLeft,
                 child: Material(
@@ -165,12 +184,10 @@ class _AddItemSheetState extends State<AddItemSheet> {
                   elevation: 4,
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
-                    width:
-                        MediaQuery.of(context).size.width -
-                        32, // Match parent width roughly
+                    width: MediaQuery.of(context).size.width - 32,
                     constraints: const BoxConstraints(maxHeight: 250),
                     decoration: BoxDecoration(
-                      color: containerColor, // Theme adjusted
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: borderColor),
                     ),
@@ -183,11 +200,11 @@ class _AddItemSheetState extends State<AddItemSheet> {
                         return ListTile(
                           leading: _buildProductImage(option),
                           title: Text(
-                            option.name,
+                            isTr ? option.nameTr : option.name,
                             style: TextStyle(color: textColor),
                           ),
                           subtitle: Text(
-                            option.category,
+                            isTr ? option.categoryTr : option.category,
                             style: TextStyle(color: hintColor, fontSize: 12),
                           ),
                           onTap: () => onSelected(option),
@@ -199,20 +216,15 @@ class _AddItemSheetState extends State<AddItemSheet> {
               );
             },
             onSelected: (FoodInfo selection) {
-              _searchController.text = selection.name;
+              final isTr = Localizations.localeOf(context).languageCode == 'tr';
+              _searchController.text = isTr ? selection.nameTr : selection.name;
               setState(() {
                 _selectedFoodInfo = selection;
-                _selectedDate = null; // Reset manual date to use new estimate
+                _selectedDate = null;
               });
             },
             fieldViewBuilder:
-                (
-                  BuildContext context,
-                  TextEditingController textEditingController,
-                  FocusNode focusNode,
-                  VoidCallback onFieldSubmitted,
-                ) {
-                  // Sync logic
+                (context, textEditingController, focusNode, onFieldSubmitted) {
                   if (textEditingController.text != _searchController.text &&
                       _searchController.text.isNotEmpty) {
                     textEditingController.text = _searchController.text;
@@ -224,45 +236,37 @@ class _AddItemSheetState extends State<AddItemSheet> {
                   return TextField(
                     controller: textEditingController,
                     focusNode: focusNode,
-                    onTap: () {
-                      if (textEditingController.text.isEmpty) {
-                        textEditingController.value = TextEditingValue(
-                          text: textEditingController.text,
-                          selection: textEditingController.selection,
-                        );
-                      }
-                    },
                     decoration: InputDecoration(
-                      labelText: 'Ekleyeceğiniz ürün',
-                      hintText: 'Örn: Süt',
+                      labelText: l10n.addItemSearchLabel, // Localized
+                      hintText: l10n.addItemSearchHint, // Localized
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: containerColor, // Theme adjusted
+                      fillColor: containerColor,
                     ),
                   );
                 },
           ),
 
-          // Show category/info if selected
           if (_selectedFoodInfo != null)
             Padding(
               padding: const EdgeInsets.only(top: 8, left: 4),
               child: Text(
-                'Kategori: ${_selectedFoodInfo!.category} • Yeri: ${_selectedFoodInfo!.storageLocation}',
+                // Localized with params
+                '${l10n.addItemCategory(Localizations.localeOf(context).languageCode == 'tr' ? _selectedFoodInfo!.categoryTr : _selectedFoodInfo!.category)} • ${l10n.addItemLocation(_selectedFoodInfo!.storageLocation)}',
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
               ),
             ),
 
           const SizedBox(height: 16),
 
-          // 2. Package Open Switch
+          // --- 2. Paket Durumu Anahtarı (Switch) ---
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: containerColor, // Theme adjusted
+              color: containerColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: borderColor.withAlpha(50)),
             ),
@@ -281,7 +285,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Paketi Açık mı?',
+                      l10n.isPackageOpen, // Localized
                       style: TextStyle(
                         color: textColor,
                         fontWeight: FontWeight.bold,
@@ -289,8 +293,9 @@ class _AddItemSheetState extends State<AddItemSheet> {
                     ),
                     Text(
                       _isOpened
-                          ? 'Daha kısa ömürlü olabilir.'
-                          : 'Raf ömrü baz alınır.',
+                          ? l10n
+                                .packageOpenHint // Localized
+                          : l10n.packageClosedHint, // Localized
                       style: TextStyle(color: hintColor, fontSize: 11),
                     ),
                   ],
@@ -298,11 +303,12 @@ class _AddItemSheetState extends State<AddItemSheet> {
                 const Spacer(),
                 Switch(
                   value: _isOpened,
-                  activeColor: Colors.orange,
+                  activeTrackColor: Colors.orange.withAlpha(150),
+                  activeThumbColor: Colors.orange,
                   onChanged: (val) {
                     setState(() {
                       _isOpened = val;
-                      _selectedDate = null; // Recalculate based on new state
+                      _selectedDate = null;
                     });
                   },
                 ),
@@ -312,7 +318,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
 
           const SizedBox(height: 16),
 
-          // 3. Date Selection
+          // --- 3. Tarih Seçimi Kartı ---
           InkWell(
             onTap: _pickDate,
             borderRadius: BorderRadius.circular(12),
@@ -321,7 +327,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
               decoration: BoxDecoration(
                 border: Border.all(color: borderColor.withAlpha(50)),
                 borderRadius: BorderRadius.circular(12),
-                color: containerColor, // Theme adjusted
+                color: containerColor,
               ),
               child: Row(
                 children: [
@@ -332,8 +338,9 @@ class _AddItemSheetState extends State<AddItemSheet> {
                     children: [
                       Text(
                         _selectedDate == null
-                            ? 'Otomatik Hesaplanan SKT'
-                            : 'Seçilen SKT',
+                            ? l10n
+                                  .dateAuto // Localized
+                            : l10n.dateManual, // Localized
                         style: TextStyle(color: hintColor, fontSize: 12),
                       ),
                       Text(
@@ -350,7 +357,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
                   if (_selectedDate != null)
                     IconButton(
                       icon: const Icon(Icons.refresh, size: 20),
-                      tooltip: 'Otomatiğe Dön',
+                      tooltip: l10n.dateAutomaticTooltip, // Localized
                       onPressed: () {
                         setState(() {
                           _selectedDate = null;
@@ -358,11 +365,14 @@ class _AddItemSheetState extends State<AddItemSheet> {
                       },
                     )
                   else
-                    const Padding(
-                      padding: EdgeInsets.only(right: 8.0),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
-                        'Tahmini',
-                        style: TextStyle(color: Colors.orange, fontSize: 10),
+                        l10n.dateEstimated, // Localized
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 10,
+                        ),
                       ),
                     ),
                 ],
@@ -371,24 +381,26 @@ class _AddItemSheetState extends State<AddItemSheet> {
           ),
           const SizedBox(height: 20),
 
-          // Action Button
+          // --- Ekleme Butonu ---
           ElevatedButton.icon(
             onPressed: () {
               if (_searchController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Lütfen bir ürün adı girin.')),
+                  SnackBar(content: Text(l10n.addErrorEmpty)), // Localized
                 );
                 return;
               }
 
-              // Create Item
               final newItem = FoodItem(
                 id: DateTime.now().toString(),
                 name: _searchController.text,
                 expirationDate: effectiveDate,
                 addedDate: DateTime.now(),
-                // Use selected info category if avaiable, else 'Genel'
-                category: _selectedFoodInfo?.category ?? 'Genel',
+                category: (_selectedFoodInfo != null)
+                    ? (Localizations.localeOf(context).languageCode == 'tr'
+                          ? _selectedFoodInfo!.categoryTr
+                          : _selectedFoodInfo!.category)
+                    : 'Genel',
                 imageUrl: _selectedFoodInfo?.imagePath,
               );
 
@@ -400,13 +412,15 @@ class _AddItemSheetState extends State<AddItemSheet> {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('"${newItem.name}" dolabına eklendi!'),
+                  content: Text(
+                    l10n.addSuccess(newItem.name),
+                  ), // Localized with param
                   backgroundColor: Colors.green,
                 ),
               );
             },
             icon: const Icon(Icons.add),
-            label: const Text('Ekle'),
+            label: Text(l10n.addButton), // Localized
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.primaryColor,
               foregroundColor: Colors.white,

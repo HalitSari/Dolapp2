@@ -2,38 +2,48 @@ import 'package:dolaptakip/providers/fridge_provider.dart';
 import 'package:dolaptakip/widgets/expired_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dolaptakip/l10n/app_localizations.dart';
 
+// ExpiredProductsPage: Sadece "Süresi Dolmuş" veya "Bugün Son" olan ürünleri gösteren sayfa.
 class ExpiredProductsPage extends StatelessWidget {
   const ExpiredProductsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Consumer: FridgeProvider'ı dinleyerek veri değiştiğinde sayfayı yeniler.
     return Consumer<FridgeProvider>(
       builder: (context, provider, child) {
-        // Filter for expired items: expirationDate is before now (ignoring time if needed, but simple comparison works for now)
+        final l10n = AppLocalizations.of(context)!;
+
+        // --- Filtreleme Mantığı ---
+        // Tüm ürünler listesinden (provider.items) sadece SKT'si geçmiş olanları çekiyoruz.
         final expiredItems = provider.items.where((item) {
-          // Assuming expirationDate includes time 00:00:00, comparing to now might show today's items as expired if now > 00:00.
-          // Let's say an item expires at the END of the day.
-          // So we should compare if expirationDate is before today (start of today).
           final now = DateTime.now();
-          final today = DateTime(now.year, now.month, now.day);
-          // If expiration is strictly before today, it is expired.
+          final today = DateTime(
+            now.year,
+            now.month,
+            now.day,
+          ); // Bugünün tarihi (saatsiz).
+          // Eğer son kullanma tarihi bugünden önceyse, ürün bozulmuştur.
           return item.expirationDate.isBefore(today);
         }).toList();
 
-        // Sort by expiration date descending (most expired first)
+        // --- Sıralama Mantığı ---
+        // En eski tarihli ürün en üstte görünsün.
         expiredItems.sort(
           (a, b) => a.expirationDate.compareTo(b.expirationDate),
         );
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Süresi Geçenler'),
+            title: Text(l10n.expiredPageTitle), // Localized Title
+            // Geri dön butonu
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
             ),
           ),
+          // Liste boş ise "Süresi geçen ürün yok" mesajı görünür.
           body: expiredItems.isEmpty
               ? Center(
                   child: Column(
@@ -45,16 +55,19 @@ class ExpiredProductsPage extends StatelessWidget {
                         color: Colors.green.shade300,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        "Süresi geçen ürün yok!",
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      Text(
+                        l10n.emptyExpiredMessage, // Localized Empty Message
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
                 )
               : Column(
                   children: [
-                    // Header Alert Card
+                    // --- Üst Bilgi Kartı (Header) ---
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Container(
@@ -62,6 +75,7 @@ class ExpiredProductsPage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(24),
+                          // Hafif gölgelendirme
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withAlpha(20),
@@ -72,11 +86,12 @@ class ExpiredProductsPage extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
+                            // Kırmızı Ünlem İkonu
                             Container(
                               width: 50,
                               height: 50,
                               decoration: const BoxDecoration(
-                                color: Color(0xFFFFEBEE), // Very light red
+                                color: Color(0xFFFFEBEE), // Çok açık kırmızı
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
@@ -86,39 +101,29 @@ class ExpiredProductsPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 16),
+                            // Yazılı İçerik
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'Dikkat Gerekenler',
-                                    style: TextStyle(
+                                  Text(
+                                    l10n.attentionTitle, // Localized
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFF2D3436),
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  RichText(
-                                    text: TextSpan(
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
-                                      ),
-                                      children: [
-                                        const TextSpan(text: 'Toplam '),
-                                        TextSpan(
-                                          text: '${expiredItems.length} ürünün',
-                                          style: const TextStyle(
-                                            color: Color(0xFFFF3B30),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const TextSpan(
-                                          text:
-                                              ' son tüketim tarihi geçmiş durumda.',
-                                        ),
-                                      ],
+                                  // RichText: Tek satırda farklı stillerde yazı yazmak için kullanılır.
+                                  // Simplified logic for localization since RichText is hard to split
+                                  Text(
+                                    l10n.totalExpiredItems(
+                                      expiredItems.length,
+                                    ), // Localized with param
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
                                     ),
                                   ),
                                 ],
@@ -129,7 +134,7 @@ class ExpiredProductsPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Sub-header
+                    // --- Alt Başlık ---
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -138,9 +143,9 @@ class ExpiredProductsPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'TESPİT EDİLENLER',
-                            style: TextStyle(
+                          Text(
+                            l10n.detectedTitle, // Localized
+                            style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -156,9 +161,9 @@ class ExpiredProductsPage extends StatelessWidget {
                               color: const Color(0xFFFFEBEE),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Text(
-                              'ACİL',
-                              style: TextStyle(
+                            child: Text(
+                              l10n.urgentLabel, // Localized
+                              style: const TextStyle(
                                 color: Color(0xFFFF3B30),
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -169,52 +174,56 @@ class ExpiredProductsPage extends StatelessWidget {
                       ),
                     ),
 
-                    // List
+                    // --- Liste ---
                     Expanded(
                       child: ListView.separated(
                         padding: const EdgeInsets.fromLTRB(
                           16,
                           0,
                           16,
-                          120,
-                        ), // Increased bottom padding to avoid button overlap
+                          120, // Alt buton için padding.
+                        ),
                         itemCount: expiredItems.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final item = expiredItems[index];
+                          // Her satırda ExpiredListItem kullanıyoruz.
                           return ExpiredListItem(item: item);
                         },
                       ),
                     ),
                   ],
                 ),
-          // Bottom Button
+
+          // --- Alt Buton (Tümünü Temizle) ---
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+              FloatingActionButtonLocation.centerFloat, // Butonu ortala
           floatingActionButton: expiredItems.isEmpty
-              ? null
+              ? null // Liste boşsa butonu gizle.
               : Padding(
                   padding: const EdgeInsets.only(
                     left: 16,
                     right: 16,
-                    bottom: 110, // Increased to clearly clear the bottom nav
+                    bottom:
+                        110, // Bottom Navigation Bar'ın üzerine denk gelmemesi için pay.
                   ),
                   child: SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Clear all expired items
+                        // Tüm süresi geçen ürünleri döngüyle sil.
                         for (var item in expiredItems) {
                           provider.removeItem(item.id);
                         }
 
+                        // Kullanıcıya bilgi ver (SnackBar).
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
+                          SnackBar(
                             content: Text(
-                              'Tüm süresi geçen ürünler temizlendi!',
+                              l10n.clearAllSuccess, // Localized
                             ),
-                            backgroundColor: Color(0xFFFF3B30),
+                            backgroundColor: const Color(0xFFFF3B30),
                           ),
                         );
                       },
@@ -228,9 +237,9 @@ class ExpiredProductsPage extends StatelessWidget {
                         ),
                       ),
                       icon: const Icon(Icons.delete_sweep_rounded),
-                      label: const Text(
-                        'Tümünü Temizle',
-                        style: TextStyle(
+                      label: Text(
+                        l10n.clearAllButton, // Localized
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

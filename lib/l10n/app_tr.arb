@@ -1,0 +1,108 @@
+{
+    "appTitle": "DolApp",
+    "homePageTitle": "DolApp",
+    "expiredPageTitle": "Süresi Geçenler",
+    "recipesPageTitle": "Tarifler",
+    "recipesUnderConstruction": "Yapım Aşamasında",
+    "recipesComingSoon": "Lezzetli tarifler çok yakında burada olacak!",
+    "settingsPageTitle": "Ayarlar",
+    "addItemTitle": "Ürün Ekle",
+    
+    "tabHome": "Ev",
+    "tabExpired": "Süresi Geçenler",
+    "tabRecipes": "Tarifler",
+    
+    "emptyFridgeMessage": "Dolabın boş görünüyor.\nHemen bir şeyler ekle!",
+    "emptyExpiredMessage": "Süresi geçen ürün yok!",
+    
+    "daysLeft": "{count, plural, =0{Bugün Son} =1{Yarın Son} other{{count} gün kaldı}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    
+    "timeAgoToday": "Bugün",
+    "timeAgoYesterday": "Dün",
+    "timeAgoPast": "{count, plural, =1{1 gün önce} other{{count} gün önce}}",
+    "@timeAgoPast": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    
+    "expiredStatus": "Süresi Doldu",
+    "expiredWarningUrgent": "Derhal atın",
+    "expiredWarningRisk": "Bozulmuş olabilir",
+    "expiredWarningPast": "Tüketim tarihi geçti",
+    "urgentLabel": "ACİL",
+    
+    "attentionTitle": "Dikkat Gerekenler",
+    "totalExpiredItems": "Toplam {count} ürünün son tüketim tarihi geçmiş durumda.",
+    "@totalExpiredItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    
+    "detectedTitle": "TESPİT EDİLENLER",
+    "clearAllButton": "Tümünü Temizle",
+    "clearAllSuccess": "Tüm süresi geçen ürünler temizlendi!",
+
+    "addItemSearchLabel": "Ekleyeceğiniz ürün",
+    "addItemSearchHint": "Örn: Süt",
+    "addItemCategory": "Kategori: {category}",
+    "@addItemCategory": {
+        "placeholders": {
+            "category": {
+                "type": "String"
+            }
+        }
+    },
+    "addItemLocation": "Yeri: {location}",
+    "@addItemLocation": {
+        "placeholders": {
+            "location": {
+                "type": "String"
+            }
+        }
+    },
+    
+    "isPackageOpen": "Paketi Açık mı?",
+    "packageOpenHint": "Daha kısa ömürlü olabilir.",
+    "packageClosedHint": "Raf ömrü baz alınır.",
+    
+    "dateManual": "Seçilen SKT",
+    "dateAuto": "Otomatik Hesaplanan SKT",
+    "dateEstimated": "Tahmini",
+    "dateAutomaticTooltip": "Otomatiğe Dön",
+    
+    "addButton": "Ekle",
+    "addSuccess": "\"{name}\" dolabına eklendi!",
+    "@addSuccess": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "addErrorEmpty": "Lütfen bir ürün adı girin.",
+
+    "settingsLanguage": "Dil",
+    "settingsLanguageTitle": "Uygulama Dili",
+    "settingsTheme": "Tema",
+    "settingsThemeTitle": "Uygulama Teması",
+    
+    "themeLight": "Aydınlık",
+    "themeDark": "Karanlık",
+    "themeSystem": "Sistem",
+
+    "languageTr": "Türkçe",
+    "languageEn": "English"
+}

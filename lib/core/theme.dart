@@ -7,14 +7,14 @@ class AppTheme {
     scaffoldBackgroundColor: const Color(
       0xFFF5F7FA,
     ), // Soft cool gray/white background
-    primaryColor: const Color(0xFFFF3B30), // Vibrant Red (Apple style)
+    primaryColor: const Color(0xFF4CAF50), // Vibrant Red (Apple style)
     cardColor: Colors.white,
     colorScheme: const ColorScheme.light(
-      primary: Color(0xFFFF3B30),
+      primary: Color(0xFF4CAF50),
       secondary: Color(0xFF34C759), // Fresh Green
       surface: Colors.white,
       onSurface: Color(0xFF2D3436), // Deep charcoal for text
-      error: Color(0xFFFF3B30),
+      error: Color(0xFF4CAF50),
     ),
     fontFamily: GoogleFonts.outfit().fontFamily,
     appBarTheme: const AppBarTheme(
@@ -30,7 +30,7 @@ class AppTheme {
       ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFFFF3B30),
+      backgroundColor: Color(0xFF4CAF50),
       foregroundColor: Colors.white,
       elevation: 8,
     ),
@@ -54,7 +54,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFFF3B30), width: 2),
+        borderSide: const BorderSide(color: Color(0xFF4CAF50), width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
     ),
@@ -63,14 +63,14 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: const Color(0xFF121212), // Dark background
-    primaryColor: const Color(0xFFFF3B30),
+    primaryColor: const Color(0xFF4CAF50),
     cardColor: const Color(0xFF1E1E1E), // Slightly lighter dark for cards
     colorScheme: const ColorScheme.dark(
-      primary: Color(0xFFFF3B30),
+      primary: Color(0xFF4CAF50),
       secondary: Color(0xFF34C759),
       surface: Color(0xFF1E1E1E),
       onSurface: Colors.white,
-      error: Color(0xFFFF3B30),
+      error: Color(0xFF4CAF50),
     ),
     fontFamily: GoogleFonts.outfit().fontFamily,
     appBarTheme: const AppBarTheme(
@@ -86,7 +86,7 @@ class AppTheme {
       ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFFFF3B30),
+      backgroundColor: Color(0xFF4CAF50),
       foregroundColor: Colors.white,
       elevation: 8,
     ),
@@ -109,7 +109,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFFF3B30), width: 2),
+        borderSide: const BorderSide(color: Color(0xFF4CAF50), width: 2),
       ),
       labelStyle: const TextStyle(color: Colors.grey),
       hintStyle: TextStyle(color: Colors.grey[700]),
