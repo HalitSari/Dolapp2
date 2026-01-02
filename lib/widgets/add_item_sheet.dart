@@ -105,6 +105,14 @@ class _AddItemSheetState extends State<AddItemSheet> {
   Widget build(BuildContext context) {
     // Current effective date (Manual or Estimated)
     final effectiveDate = _selectedDate ?? _calculateEstimatedDate();
+    final theme = Theme.of(context);
+
+    // Colors derived from theme
+    final containerColor =
+        theme.inputDecorationTheme.fillColor ?? theme.cardColor;
+    final borderColor = theme.dividerColor;
+    final textColor = theme.textTheme.bodyMedium?.color ?? Colors.black;
+    final hintColor = theme.hintColor;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -122,7 +130,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
             children: [
               Text(
                 'Ürün Ekle',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -153,7 +161,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
               return Align(
                 alignment: Alignment.topLeft,
                 child: Material(
-                  color: Colors.grey[900], // Match input background
+                  color: containerColor,
                   elevation: 4,
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
@@ -162,9 +170,9 @@ class _AddItemSheetState extends State<AddItemSheet> {
                         32, // Match parent width roughly
                     constraints: const BoxConstraints(maxHeight: 250),
                     decoration: BoxDecoration(
-                      color: Colors.grey[900],
+                      color: containerColor, // Theme adjusted
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade800),
+                      border: Border.all(color: borderColor),
                     ),
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
@@ -176,14 +184,11 @@ class _AddItemSheetState extends State<AddItemSheet> {
                           leading: _buildProductImage(option),
                           title: Text(
                             option.name,
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: textColor),
                           ),
                           subtitle: Text(
                             option.category,
-                            style: TextStyle(
-                              color: Colors.grey.shade400,
-                              fontSize: 12,
-                            ),
+                            style: TextStyle(color: hintColor, fontSize: 12),
                           ),
                           onTap: () => onSelected(option),
                         );
@@ -214,8 +219,6 @@ class _AddItemSheetState extends State<AddItemSheet> {
                   }
                   textEditingController.addListener(() {
                     _searchController.text = textEditingController.text;
-                    // Reset selected info if user types something custom that doesn't match
-                    // This is a bit complex, for now let's keep it simple.
                   });
 
                   return TextField(
@@ -223,8 +226,6 @@ class _AddItemSheetState extends State<AddItemSheet> {
                     focusNode: focusNode,
                     onTap: () {
                       if (textEditingController.text.isEmpty) {
-                        // Force trigger options builder
-                        // A slightly hacky way to force the Autocomplete to show options for empty text
                         textEditingController.value = TextEditingValue(
                           text: textEditingController.text,
                           selection: textEditingController.selection,
@@ -239,7 +240,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: Colors.grey[900],
+                      fillColor: containerColor, // Theme adjusted
                     ),
                   );
                 },
@@ -261,9 +262,9 @@ class _AddItemSheetState extends State<AddItemSheet> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.grey[900],
+              color: containerColor, // Theme adjusted
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade800),
+              border: Border.all(color: borderColor.withAlpha(50)),
             ),
             child: Row(
               children: [
@@ -271,16 +272,18 @@ class _AddItemSheetState extends State<AddItemSheet> {
                   _isOpened
                       ? Icons.lock_open_rounded
                       : Icons.lock_outline_rounded,
-                  color: _isOpened ? Colors.orange : Colors.green,
+                  color: _isOpened
+                      ? Colors.orange
+                      : theme.colorScheme.secondary,
                 ),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Paketi Açık mı?',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: textColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -288,7 +291,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
                       _isOpened
                           ? 'Daha kısa ömürlü olabilir.'
                           : 'Raf ömrü baz alınır.',
-                      style: TextStyle(color: Colors.grey[400], fontSize: 11),
+                      style: TextStyle(color: hintColor, fontSize: 11),
                     ),
                   ],
                 ),
@@ -316,9 +319,9 @@ class _AddItemSheetState extends State<AddItemSheet> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade600),
+                border: Border.all(color: borderColor.withAlpha(50)),
                 borderRadius: BorderRadius.circular(12),
-                color: Colors.grey[900],
+                color: containerColor, // Theme adjusted
               ),
               child: Row(
                 children: [
@@ -331,15 +334,12 @@ class _AddItemSheetState extends State<AddItemSheet> {
                         _selectedDate == null
                             ? 'Otomatik Hesaplanan SKT'
                             : 'Seçilen SKT',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
+                        style: TextStyle(color: hintColor, fontSize: 12),
                       ),
                       Text(
                         '${effectiveDate.day}.${effectiveDate.month}.${effectiveDate.year}',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: textColor,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -408,7 +408,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
             icon: const Icon(Icons.add),
             label: const Text('Ekle'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: theme.primaryColor,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(

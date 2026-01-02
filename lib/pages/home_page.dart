@@ -6,6 +6,7 @@ import 'package:dolaptakip/providers/fridge_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:dolaptakip/widgets/food_list_item.dart';
 import 'package:dolaptakip/pages/settings_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -83,20 +84,6 @@ class _HomePageState extends State<HomePage> {
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
-  Color _getStatusColor(int daysLeft) {
-    if (daysLeft <= 0) return const Color(0xFFFF5252); // Red
-    if (daysLeft <= 2) return const Color(0xFFFFAB40); // Orange
-    if (daysLeft <= 5) return const Color(0xFFFFD740); // Amber
-    return const Color(0xFF00E676); // Green/Mint
-  }
-
-  String _getStatusText(int daysLeft) {
-    if (daysLeft < 0) return 'Süresi Doldu';
-    if (daysLeft == 0) return 'Bugün Son';
-    if (daysLeft == 1) return 'Yarın Son';
-    return '$daysLeft gün kaldı';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<FridgeProvider>(
@@ -135,97 +122,7 @@ class HomeContent extends StatelessWidget {
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
             final item = items[index];
-            final daysLeft =
-                item.expirationDate.difference(DateTime.now()).inDays + 1;
-            final statusColor = _getStatusColor(daysLeft);
-
-            return Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(20),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    // Image Container
-                    Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[900],
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: item.imageUrl != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.asset(
-                                item.imageUrl!,
-                                fit: BoxFit.cover,
-                                width: 70,
-                                height: 70,
-                              ),
-                            )
-                          : const Center(
-                              child: Text('🍎', style: TextStyle(fontSize: 32)),
-                            ),
-                    ),
-                    const SizedBox(width: 16),
-                    // Content
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Color(0xFF2D3436),
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor.withAlpha(30),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: statusColor.withAlpha(50),
-                              ),
-                            ),
-                            child: Text(
-                              _getStatusText(daysLeft),
-                              style: TextStyle(
-                                color: statusColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Action
-                    IconButton(
-                      icon: const Icon(Icons.delete_outline_rounded),
-                      color: Colors.grey,
-                      onPressed: () => provider.removeItem(item.id),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return FoodListItem(item: item);
           },
         );
       },

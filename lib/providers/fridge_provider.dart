@@ -1,46 +1,37 @@
-import 'dart:convert';
+import 'dart:async';
 import 'package:dolaptakip/models/food_item.dart';
+import 'package:dolaptakip/services/firestore_service.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FridgeProvider extends ChangeNotifier {
+  final FirestoreService _firestoreService = FirestoreService();
   List<FoodItem> _items = [];
+  StreamSubscription<List<FoodItem>>? _itemsSubscription;
 
   List<FoodItem> get items => List.unmodifiable(_items);
 
   FridgeProvider() {
-    _loadItems();
+    _init();
   }
 
-  Future<void> _loadItems() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? itemsJson = prefs.getString('food_items');
-    if (itemsJson != null) {
-      final List<dynamic> decodedList = jsonDecode(itemsJson);
-      _items = decodedList.map((item) => FoodItem.fromJson(item)).toList();
+  void _init() {
+    _itemsSubscription = _firestoreService.getItems().listen((items) {
+      _items = items;
       notifyListeners();
-    }
+    });
   }
 
-  Future<void> _saveItems() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String encodedList = jsonEncode(
-      _items.map((item) => item.toJson()).toList(),
-    );
-    await prefs.setString('food_items', encodedList);
+  @override
+  void dispose() {
+    _itemsSubscription?.cancel();
+    super.dispose();
   }
 
-  void addItem(FoodItem item) {
-    _items.add(item);
-    // Sort items by expiration date (closest first)
-    _items.sort((a, b) => a.expirationDate.compareTo(b.expirationDate));
-    _saveItems();
-    notifyListeners();
+  Future<void> addItem(FoodItem item) async {
+    await _firestoreService.addItem(item);
   }
 
-  void removeItem(String id) {
-    _items.removeWhere((item) => item.id == id);
-    _saveItems();
-    notifyListeners();
+  Future<void> removeItem(String id) async {
+    await _firestoreService.removeItem(id);
   }
 }

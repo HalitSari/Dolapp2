@@ -6,7 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:dolaptakip/providers/fridge_provider.dart';
 import 'package:dolaptakip/providers/theme_provider.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

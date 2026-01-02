@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "980619711134",
+    "project_id": "dolapp-firebase",
+    "storage_bucket": "dolapp-firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980619711134:android:223bfc7c65f6469488218f",
+        "android_client_info": {
+          "package_name": "com.dolaptakip.app.dolaptakip"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd0c8znv8DEySosKv0RCp1ptZJ1Qo4ysA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
