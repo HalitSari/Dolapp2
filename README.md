@@ -47,7 +47,7 @@ Dünya genelinde her yıl tonlarca gıda, sadece tarihi geçtiği fark edilmedi�
 -------------------------------------------------------------------------------------------------------------------------------------
 
 📸 Uygulama İçi Görüntüler
-![WhatsApp Image 2026-01-05 at 11 39 00](https://github.com/user-attachments/assets/bcd9cc74-900e-43c0-bd44-67af9d6b86b1)
+<img src="![WhatsApp Image 2026-01-05 at 11 39 00](https://github.com/user-attachments/assets/bcd9cc74-900e-43c0-bd44-67af9d6b86b1)" width="300" alt="Görsel Açıklaması">
 ![WhatsApp Image 2026-01-05 at 11 38 59](https://github.com/user-attachments/assets/ac3f3464-2bf5-4caf-beef-850faba6536f)
 ![WhatsApp Image 2026-01-05 at 11 38 59 (2)](https://github.com/user-attachments/assets/0051377e-c922-4ae5-a438-9e5aeb1ac4d4)
 ![WhatsApp Image 2026-01-05 at 11 38 59 (1)](https://github.com/user-attachments/assets/7803ca3d-7dbd-4cb3-84dc-4ce2094e218b)
