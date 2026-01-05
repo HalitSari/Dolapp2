@@ -47,17 +47,30 @@ Dünya genelinde her yıl tonlarca gıda, sadece tarihi geçtiği fark edilmedi�
 -------------------------------------------------------------------------------------------------------------------------------------
 
 📸 Uygulama İçi Görüntüler
-<a href="https://hizliresim.com/oru8gwc"><img src="https://i.hizliresim.com/oru8gwc.jpeg" alt="ff"></a>
-<a href="https://hizliresim.com/g9ar4b4"><img src="https://i.hizliresim.com/g9ar4b4.jpeg" alt="ff"></a>
-<a href="https://hizliresim.com/gt0i0bm"><img src="https://i.hizliresim.com/gt0i0bm.jpeg" alt="ff"></a>
-<a href="https://hizliresim.com/l5595lv"><img src="https://i.hizliresim.com/l5595lv.jpeg" alt="ff"></a>
-
-![WhatsApp Image 2026-01-05 at 11 39 00](https://github.com/user-attachments/assets/bcd9cc74-900e-43c0-bd44-67af9d6b86b1)
-![WhatsApp Image 2026-01-05 at 11 38 59](https://github.com/user-attachments/assets/ac3f3464-2bf5-4caf-beef-850faba6536f)
-![WhatsApp Image 2026-01-05 at 11 38 59 (2)](https://github.com/user-attachments/assets/0051377e-c922-4ae5-a438-9e5aeb1ac4d4)
-![WhatsApp Image 2026-01-05 at 11 38 59 (1)](https://github.com/user-attachments/assets/7803ca3d-7dbd-4cb3-84dc-4ce2094e218b)
-![WhatsApp Image 2026-01-05 at 11 39 00](https://github.com/user-attachments/assets/3d92adb2-852b-4cf1-8f2e-2f9bfb6feca7)
-
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://hizliresim.com/oru8gwc">
+        <img src="https://i.hizliresim.com/oru8gwc.jpeg" width="180" alt="1">
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://hizliresim.com/g9ar4b4">
+        <img src="https://i.hizliresim.com/g9ar4b4.jpeg" width="180" alt="2">
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://hizliresim.com/gt0i0bm">
+        <img src="https://i.hizliresim.com/gt0i0bm.jpeg" width="180" alt="3">
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://hizliresim.com/l5595lv">
+        <img src="https://i.hizliresim.com/l5595lv.jpeg" width="180" alt="4">
+      </a>
+    </td>
+  </tr>
+</table>
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
